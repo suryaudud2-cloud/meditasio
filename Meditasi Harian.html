@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditasi Harian - Frekuensi & Afirmasi</title>
+    
+    <!-- PWA & Android Meta Tags -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism visual style */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Animation class for smooth fade transitions */
+        .fade-transition {
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+
+        /* Breathing Circle Pulse Animation */
+        @keyframes breatheGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
+            50% { box-shadow: 0 0 50px rgba(168, 85, 247, 0.5); }
+        }
+        .breathe-circle {
+            animation: breatheGlow 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-100 pb-12">
+
+    <!-- Header / Navbar -->
+    <header class="w-full py-6 px-4 text-center border-b border-slate-800/60 glass-card sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200">Meditasi Harian</h1>
+            </div>
+            <span class="text-xs px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-medium">Suara & Afirmasi</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
+
+        <!-- SECTION 1: AFIRMASI UTAMA (HERO DISPLAY) -->
+        <section class="glass-card rounded-3xl p-6 md:p-10 text-center relative overflow-hidden flex flex-col justify-between min-h-[320px]">
+            <!-- Background Ambient Glow -->
+            <div class="absolute -top-24 -left-24 w-60 h-60 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-60 h-60 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Top Filter & Controls -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6 relative z-10">
+                <select id="categorySelect" class="bg-slate-800/80 border border-slate-700 text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer">
+                    <option value="Percaya Diri">✨ Percaya Diri</option>
+                    <option value="Produktif">🚀 Produktivitas & Fokus</option>
+                    <option value="Ketenangan" selected>🌿 Ketenangan</option>
+                    <option value="Syukur">🙏 Rasa Syukur</option>
+                    <option value="Tidur">🌙 Tidur Nyenyak</option>
+                    <option value="Kustom">✏️ Afirmasi Saya</option>
+                </select>
+
+                <div class="flex items-center space-x-2">
+                    <button id="ttsToggleBtn" title="Bacakan Afirmasi" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition">
+                        <svg id="ttsIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                        </svg>
+                    </button>
+                    <button id="randomBtn" title="Acak Afirmasi" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Affirmation Text Area -->
+            <div class="my-auto py-6 relative z-10 flex flex-col items-center justify-center">
+                <p id="affirmationText" class="text-xl md:text-3xl font-medium text-slate-100 leading-relaxed max-w-2xl fade-transition opacity-100 transform scale-100 min-h-[90px] flex items-center justify-center">
+                    "Saya menerima hari ini apa adanya dan mengalir bersama proses kehidupan."
+                </p>
+                <span id="affirmationCounter" class="text-xs text-slate-400 mt-4 tracking-wider uppercase">Afirmasi 1 dari 8</span>
+            </div>
+
+            <!-- Bottom Affirmation Navigation & Speed Control -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 pt-4 border-t border-slate-800/50 relative z-10">
+                <!-- Speed Slider for Speech -->
+                <div class="flex items-center space-x-2 text-xs text-slate-400 w-full sm:w-auto">
+                    <span>Kecepatan Bicara:</span>
+                    <input type="range" id="speechRate" min="0.5" max="1.2" step="0.1" value="0.8" class="w-24 accent-indigo-500 cursor-pointer">
+                    <span id="speechRateVal" class="text-slate-300 w-8">0.8x</span>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex items-center space-x-3">
+                    <button id="prevAffirmation" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button id="nextAffirmation" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: AUDIO GENERATOR & KONTROL Utama -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Control Box (Left Side / 1 col) -->
+            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-6">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Kontrol Sesi
+                    </h2>
+
+                    <!-- Play / Stop Big Button -->
+                    <button id="playBtn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-lg shadow-lg shadow-indigo-500/30 transition transform active:scale-95 flex items-center justify-center gap-3">
+                        <svg id="playIcon" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <span id="playBtnText">Mulai Meditasi</span>
+                    </button>
+
+                    <!-- Timer Preset Buttons -->
+                    <div class="mt-6">
+                        <label class="block text-xs font-medium text-slate-400 mb-2">DURASI SESI (TIMER)</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="timer-btn py-2 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-indigo-600/40 border border-slate-700 transition" data-minutes="5">5 Min</button>
+                            <button class="timer-btn py-2 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-indigo-600/40 border border-slate-700 transition" data-minutes="10">10 Min</button>
+                            <button class="timer-btn py-2 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-indigo-600/40 border border-slate-700 transition" data-minutes="15">15 Min</button>
+                            <button class="timer-btn py-2 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-indigo-600/40 border border-slate-700 transition" data-minutes="20">20 Min</button>
+                        </div>
+                        <div id="timerDisplay" class="text-center mt-3 text-2xl font-mono font-bold text-indigo-300 hidden">
+                            00:00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume Master Slider -->
+                <div class="space-y-4 pt-4 border-t border-slate-800">
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-300 mb-1">
+                            <span>Volume Utama (Max 60%)</span>
+                            <span id="masterVolVal" class="font-mono">20%</span>
+                        </div>
+                        <input type="range" id="masterVolume" min="0" max="0.6" step="0.01" value="0.2" class="w-full accent-indigo-500 cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-300 mb-1">
+                            <span>Suara Latar (Pink Noise)</span>
+                            <span id="bgVolVal" class="font-mono">0%</span>
+                        </div>
+                        <input type="range" id="bgVolume" min="0" max="0.4" step="0.01" value="0" class="w-full accent-purple-500 cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Settings Panel (Right Side / 2 cols) -->
+            <div class="glass-card rounded-3xl p-6 md:col-span-2 space-y-6">
+                <!-- Mode Tab Selector -->
+                <div class="flex border-b border-slate-800 pb-3 gap-4">
+                    <button id="modeSingleBtn" class="text-sm font-semibold pb-2 border-b-2 border-indigo-500 text-indigo-300 transition">
+                        🔔 Mode Nada Tunggal
+                    </button>
+                    <button id="modeBinauralBtn" class="text-sm font-semibold pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                        🎧 Mode Binaural Beats
+                    </button>
+                </div>
+
+                <!-- Single Tone Panel -->
+                <div id="singleTonePanel" class="space-y-4">
+                    <p class="text-xs text-slate-400">Frekuensi solfeggio alami untuk meresonansi pikiran dan tubuh.</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <button class="tone-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-indigo-900/40 border border-slate-700/80 transition" data-freq="396">
+                            <div class="text-xs font-bold text-indigo-300">396 Hz</div>
+                            <div class="text-[10px] text-slate-400">Pelepas Rasa Cemas</div>
+                        </button>
+                        <button class="tone-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-indigo-900/40 border border-slate-700/80 transition" data-freq="417">
+                            <div class="text-xs font-bold text-indigo-300">417 Hz</div>
+                            <div class="text-[10px] text-slate-400">Pembersih Energi</div>
+                        </button>
+                        <button class="tone-preset py-2.5 px-3 text-left rounded-xl bg-indigo-600/30 border border-indigo-500 transition" data-freq="432">
+                            <div class="text-xs font-bold text-indigo-300">432 Hz</div>
+                            <div class="text-[10px] text-slate-400">Harmoni Alam</div>
+                        </button>
+                        <button class="tone-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-indigo-900/40 border border-slate-700/80 transition" data-freq="528">
+                            <div class="text-xs font-bold text-indigo-300">528 Hz</div>
+                            <div class="text-[10px] text-slate-400">Transformasi & Cinta</div>
+                        </button>
+                        <button class="tone-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-indigo-900/40 border border-slate-700/80 transition" data-freq="639">
+                            <div class="text-xs font-bold text-indigo-300">639 Hz</div>
+                            <div class="text-[10px] text-slate-400">Koneksi & Hubungan</div>
+                        </button>
+                        <button class="tone-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-indigo-900/40 border border-slate-700/80 transition" data-freq="741">
+                            <div class="text-xs font-bold text-indigo-300">741 Hz</div>
+                            <div class="text-[10px] text-slate-400">Intuisi & Solusi</div>
+                        </button>
+                    </div>
+
+                    <!-- Custom Single Frequency Slider -->
+                    <div class="pt-2">
+                        <div class="flex justify-between text-xs text-slate-300 mb-1">
+                            <span>Frekuensi Manual (Hz)</span>
+                            <span id="manualFreqVal" class="font-mono text-indigo-300">432 Hz</span>
+                        </div>
+                        <input type="range" id="manualFreqSlider" min="100" max="1000" value="432" step="1" class="w-full accent-indigo-500 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Binaural Beats Panel (Hidden by default) -->
+                <div id="binauralPanel" class="space-y-4 hidden">
+                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 flex items-center space-x-3 text-amber-200 text-xs">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span><strong>Perhatian:</strong> Gunakan headphone agar efek stereo binaural bekerja secara optimal.</span>
+                    </div>
+
+                    <!-- Base Frequency Control -->
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-300 mb-1">
+                            <span>Frekuensi Dasar Telinga Kiri (Base)</span>
+                            <span id="baseFreqVal" class="font-mono text-purple-300">200 Hz</span>
+                        </div>
+                        <input type="range" id="baseFreqSlider" min="100" max="400" value="200" step="1" class="w-full accent-purple-500 cursor-pointer">
+                    </div>
+
+                    <!-- Binaural Presets -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">PRESET GELOMBANG OTAK (SELISIH KANAN)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="binaural-preset py-2.5 px-3 text-left rounded-xl bg-purple-900/30 border border-purple-500 transition" data-beat="2">
+                                <div class="text-xs font-bold text-purple-300">Delta (2 Hz)</div>
+                                <div class="text-[10px] text-slate-400">Tidur Nyenyak & Restorasi</div>
+                            </button>
+                            <button class="binaural-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-purple-900/30 border border-slate-700 transition" data-beat="6">
+                                <div class="text-xs font-bold text-purple-300">Theta (6 Hz)</div>
+                                <div class="text-[10px] text-slate-400">Meditasi Dalam & Intuisi</div>
+                            </button>
+                            <button class="binaural-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-purple-900/30 border border-slate-700 transition" data-beat="10">
+                                <div class="text-xs font-bold text-purple-300">Alfa (10 Hz)</div>
+                                <div class="text-[10px] text-slate-400">Relaksasi & Ketenangan</div>
+                            </button>
+                            <button class="binaural-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-purple-900/30 border border-slate-700 transition" data-beat="15">
+                                <div class="text-xs font-bold text-purple-300">Beta (15 Hz)</div>
+                                <div class="text-[10px] text-slate-400">Fokus Ringan & Konsentrasi</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: PANDU NAPAS (BREATHING GUIDE) -->
+        <section class="glass-card rounded-3xl p-6 flex flex-col items-center text-center relative">
+            <div class="flex items-center justify-between w-full mb-4">
+                <h3 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    Panduan Napas Teratur (4-4-6)
+                </h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="breathingToggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+            </div>
+
+            <!-- Breathing Visualizer Container -->
+            <div id="breathingContainer" class="hidden flex-col items-center justify-center py-6 my-2">
+                <div class="relative flex items-center justify-center">
+                    <!-- Outer Expanding Circle -->
+                    <div id="breathCircle" class="w-36 h-36 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-indigo-500/30 to-teal-500/30 border border-indigo-400/50 flex items-center justify-center transition-all duration-[4000ms] ease-in-out transform scale-100 breathe-circle">
+                        <span id="breathText" class="text-sm md:text-base font-medium text-indigo-200 tracking-wide">Tarik Napas...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: TAMBAH AFIRMASI KUSTOM -->
+        <section class="glass-card rounded-3xl p-6">
+            <h3 class="text-base font-semibold text-slate-200 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Tambah Afirmasi Pribadi Anda
+            </h3>
+            <form id="addAffirmationForm" class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="customAffirmationInput" placeholder="Tulis kalimat positif baru untuk diri Anda..." required class="flex-grow bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition flex-shrink-0">
+                    Simpan
+                </button>
+            </form>
+        </section>
+
+        <!-- DISCLAIMER FOOTER NOTE -->
+        <footer class="text-center pt-4 pb-2 px-4">
+            <p class="text-[11px] text-slate-500 leading-relaxed max-w-2xl mx-auto">
+                <strong>Catatan:</strong> Frekuensi ini untuk relaksasi dan bukan pengganti perawatan medis. Hindari memakai saat berkendara atau mengoperasikan mesin. Jika punya riwayat epilepsi atau gangguan pendengaran, konsultasikan dulu dengan dokter. Jaga volume tetap nyaman.
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // --- DATA AFIRMASI ---
+        const initialAffirmationDatabase = {
+            "Percaya Diri": [
+                "Saya belajar untuk lebih percaya dan menghargai proses pertumbuhan diri saya.",
+                "Setiap langkah kecil yang saya ambil membawa kemajuan yang berarti.",
+                "Saya memiliki kemampuan untuk mengatasi tantangan yang ada di hadapan saya.",
+                "Saya menerima kekurangan diri dan terus berusaha menjadi lebih baik.",
+                "Keputusan dan pandangan saya memiliki nilai yang berharga.",
+                "Saya berhak merasa bangga atas segala pencapaian yang telah diraih.",
+                "Saya tenang menghadapi ketidakpastian karena saya percaya pada ketahanan diri.",
+                "Saya memberi ruang bagi diri saya untuk berkembang tanpa rasa takut dinilai."
+            ],
+            "Produktif": [
+                "Saya fokus pada satu tugas penting dengan penuh perhatian dan ketenangan.",
+                "Energi saya terarah pada hal-hal yang benar-benar memberi dampak positif.",
+                "Saya menghargai waktu saya dan menggunakannya dengan bijaksana.",
+                "Istirahat yang cukup adalah bagian penting dari produktivitas yang sehat.",
+                "Saya mampu menyelesaikan pekerjaan saya dengan teratur dan tanpa terburu-buru.",
+                "Setiap kendala adalah kesempatan untuk belajar memecahkan masalah.",
+                "Kreativitas dan ide-ide jernih mengalir saat pikiran saya tetap tenang.",
+                "Saya puas dengan usaha terbaik yang bisa saya berikan hari ini."
+            ],
+            "Ketenangan": [
+                "Saya menerima hari ini apa adanya dan mengalir bersama proses kehidupan.",
+                "Napas saya pelan dan dalam, membawa ketenangan ke seluruh tubuh.",
+                "Saya melepaskan kekhawatiran tentang hal-hal di luar kendali saya.",
+                "Pikiran saya menjadi lebih jernih dan tenang seiring tubuh yang rileks.",
+                "Di dalam ketenangan ini, saya menemukan kedamaian dan kedewasaan pikiran.",
+                "Saya aman, nyaman, dan berada di ruang yang penuh kedamaian.",
+                "Perasaan cemas perlahan memudar menggantikan rasa aman di dalam hati.",
+                "Saya mengizinkan tubuh dan pikiran saya beristirahat sejenak dari kesibukan."
+            ],
+            "Syukur": [
+                "Saya bersyukur atas kebaikan-kebaikan sederhana yang hadir hari ini.",
+                "Tubuh saya bekerja keras setiap hari, dan saya berterima kasih atas kesehatannya.",
+                "Saya menghargai kehadiran orang-orang yang mendukung dan mengasihi saya.",
+                "Pengalaman hidup hari ini memberi pelajaran bernilai untuk masa depan.",
+                "Saya bersyukur atas tempat tinggal yang aman dan makanan yang cukup.",
+                "Rasa syukur membantu saya melihat keindahan dalam rutinitas harian.",
+                "Saya membuka hati untuk menerima lebih banyak keberkahan dan kedamaian.",
+                "Terima kasih atas kesempatan untuk memulai hari baru dengan niat yang baik."
+            ],
+            "Tidur": [
+                "Tugas hari ini telah selesai, dan kini saatnya tubuh saya beristirahat total.",
+                "Saya melepaskan seluruh beban hari ini dan bersiap masuk ke dalam tidur nyenyak.",
+                "Setiap embusan napas melepaskan ketegangan di pikiran dan otot-otot tubuh.",
+                "Malam ini adalah waktu pemulihan yang aman dan menenangkan bagi saya.",
+                "Pikiran saya perlahan melambat, bersiap untuk memasuki mimpi yang indah.",
+                "Saya menyambut tidur dengan hati yang ikhlas dan penuh rasa syukur.",
+                "Besok adalah hari baru, namun malam ini hanya ada kedamaian dan istirahat.",
+                "Tubuh saya semakin berat, mata saya rileks, dan saya tertidur dengan lelap."
+            ],
+            "Kustom": []
+        };
+
+        let currentCategory = "Ketenangan";
+        let currentAffirmationIndex = 0;
+        let affirmationAutoInterval = null;
+
+        // --- WEB AUDIO API VARIABLES ---
+        let audioCtx = null;
+        let masterGainNode = null;
+        let isPlaying = false;
+        let activeMode = "single"; // 'single' atau 'binaural'
+
+        // Single Tone Nodes
+        let singleOsc = null;
+        let singleFreq = 432;
+
+        // Binaural Beats Nodes
+        let leftOsc = null;
+        let rightOsc = null;
+        let leftPanner = null;
+        let rightPanner = null;
+        let binauralBaseFreq = 200;
+        let binauralBeatFreq = 2; // Delta preset default
+
+        // Pink Noise Background Layer
+        let noiseNode = null;
+        let noiseGainNode = null;
+
+        // Session Timer Variable
+        let sessionTimer = null;
+        let timerSecondsRemaining = 0;
+
+        // Breathing Visualizer Loop Interval
+        let breathInterval = null;
+
+        // --- DOM ELEMENTS ---
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const playBtnText = document.getElementById('playBtnText');
+        const masterVolumeInput = document.getElementById('masterVolume');
+        const masterVolVal = document.getElementById('masterVolVal');
+        const bgVolumeInput = document.getElementById('bgVolume');
+        const bgVolVal = document.getElementById('bgVolVal');
+        
+        const modeSingleBtn = document.getElementById('modeSingleBtn');
+        const modeBinauralBtn = document.getElementById('modeBinauralBtn');
+        const singleTonePanel = document.getElementById('singleTonePanel');
+        const binauralPanel = document.getElementById('binauralPanel');
+
+        const manualFreqSlider = document.getElementById('manualFreqSlider');
+        const manualFreqVal = document.getElementById('manualFreqVal');
+        const baseFreqSlider = document.getElementById('baseFreqSlider');
+        const baseFreqVal = document.getElementById('baseFreqVal');
+
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBtns = document.querySelectorAll('.timer-btn');
+
+        const affirmationText = document.getElementById('affirmationText');
+        const affirmationCounter = document.getElementById('affirmationCounter');
+        const categorySelect = document.getElementById('categorySelect');
+        const prevAffirmationBtn = document.getElementById('prevAffirmation');
+        const nextAffirmationBtn = document.getElementById('nextAffirmation');
+        const randomBtn = document.getElementById('randomBtn');
+        const ttsToggleBtn = document.getElementById('ttsToggleBtn');
+        const speechRateInput = document.getElementById('speechRate');
+        const speechRateVal = document.getElementById('speechRateVal');
+        const customAffirmationInput = document.getElementById('customAffirmationInput');
+        const addAffirmationForm = document.getElementById('addAffirmationForm');
+
+        const breathingToggle = document.getElementById('breathingToggle');
+        const breathingContainer = document.getElementById('breathingContainer');
+        const breathCircle = document.getElementById('breathCircle');
+        const breathText = document.getElementById('breathText');
+
+        // --- INSIALISASI AFIRMASI ---
+        function updateAffirmationDisplay() {
+            const list = initialAffirmationDatabase[currentCategory];
+            if (!list || list.length === 0) {
+                affirmationText.textContent = '"Belum ada afirmasi kustom. Silakan tambahkan di bawah."';
+                affirmationCounter.textContent = 'Afirmasi 0 dari 0';
+                return;
+            }
+            if (currentAffirmationIndex >= list.length) {
+                currentAffirmationIndex = 0;
+            }
+            
+            // Animation transition
+            affirmationText.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                affirmationText.textContent = `"${list[currentAffirmationIndex]}"`;
+                affirmationCounter.textContent = `Afirmasi ${currentAffirmationIndex + 1} dari ${list.length}`;
+                affirmationText.classList.remove('opacity-0', 'scale-95');
+            }, 300);
+        }
+
+        function startAffirmationRotation() {
+            if (affirmationAutoInterval) clearInterval(affirmationAutoInterval);
+            affirmationAutoInterval = setInterval(() => {
+                const list = initialAffirmationDatabase[currentCategory];
+                if (list && list.length > 0) {
+                    currentAffirmationIndex = (currentAffirmationIndex + 1) % list.length;
+                    updateAffirmationDisplay();
+                }
+            }, 12000); // 12 Detik Otomatis
+        }
+
+        // --- SPEECH SYNTHESIS (BACAKAN AFIRMASI) ---
+        function speakAffirmation() {
+            if (!('speechSynthesis' in window)) {
+                alert('Browser Anda tidak mendukung pembacaan suara (SpeechSynthesis).');
+                return;
+            }
+
+            window.speechSynthesis.cancel(); // Hentikan yang sedang berjalan
+            const currentText = initialAffirmationDatabase[currentCategory][currentAffirmationIndex];
+            if (!currentText) return;
+
+            const utterance = new SpeechSynthesisUtterance(currentText);
+            utterance.rate = parseFloat(speechRateInput.value);
+            utterance.lang = 'id-ID';
+
+            // Cari suara Bahasa Indonesia jika ada
+            const voices = window.speechSynthesis.getVoices();
+            const idVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
+            if (idVoice) utterance.voice = idVoice;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- WEB AUDIO API LOGIC ---
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                
+                masterGainNode = audioCtx.createGain();
+                masterGainNode.gain.setValueAtTime(0, audioCtx.currentTime); // Start at 0 for fade-in
+                masterGainNode.connect(audioCtx.destination);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Buffer Generator Pink Noise Soft
+        function createPinkNoiseBuffer() {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+
+            for (let i = 0; i < bufferSize; i++) {
+                let white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.05; // Diturunkan agar sangat halus
+                b6 = white * 0.115926;
+            }
+            return buffer;
+        }
+
+        function startAudio() {
+            initAudioContext();
+
+            // Stop existing nodes safely
+            stopAudioNodes();
+
+            const currentTime = audioCtx.currentTime;
+            const targetVolume = parseFloat(masterVolumeInput.value);
+
+            // Master Fade-In 3 Detik
+            masterGainNode.gain.cancelScheduledValues(currentTime);
+            masterGainNode.gain.setValueAtTime(0, currentTime);
+            masterGainNode.gain.linearRampToValueAtTime(targetVolume, currentTime + 3);
+
+            // Noise Latar Setup
+            const noiseBuffer = createPinkNoiseBuffer();
+            noiseNode = audioCtx.createBufferSource();
+            noiseNode.buffer = noiseBuffer;
+            noiseNode.loop = true;
+
+            noiseGainNode = audioCtx.createGain();
+            const bgVolTarget = parseFloat(bgVolumeInput.value);
+            noiseGainNode.gain.setValueAtTime(bgVolTarget, currentTime);
+
+            noiseNode.connect(noiseGainNode);
+            noiseGainNode.connect(masterGainNode);
+            noiseNode.start();
+
+            // Mode Audio Tone Setup
+            if (activeMode === 'single') {
+                singleOsc = audioCtx.createOscillator();
+                singleOsc.type = 'sine';
+                singleOsc.frequency.setValueAtTime(singleFreq, currentTime);
+                singleOsc.connect(masterGainNode);
+                singleOsc.start();
+            } else {
+                // Binaural Beats Mode
+                leftOsc = audioCtx.createOscillator();
+                rightOsc = audioCtx.createOscillator();
+
+                leftOsc.type = 'sine';
+                rightOsc.type = 'sine';
+
+                leftOsc.frequency.setValueAtTime(binauralBaseFreq, currentTime);
+                rightOsc.frequency.setValueAtTime(binauralBaseFreq + binauralBeatFreq, currentTime);
+
+                // Stereo Panner
+                if (audioCtx.createStereoPanner) {
+                    leftPanner = audioCtx.createStereoPanner();
+                    rightPanner = audioCtx.createStereoPanner();
+                    leftPanner.pan.setValueAtTime(-1, currentTime);
+                    rightPanner.pan.setValueAtTime(1, currentTime);
+
+                    leftOsc.connect(leftPanner);
+                    rightOsc.connect(rightPanner);
+                    leftPanner.connect(masterGainNode);
+                    rightPanner.connect(masterGainNode);
+                } else {
+                    // Fallback jika StereoPanner tidak didukung
+                    leftOsc.connect(masterGainNode);
+                    rightOsc.connect(masterGainNode);
+                }
+
+                leftOsc.start();
+                rightOsc.start();
+            }
+
+            isPlaying = true;
+            updatePlayButtonUI(true);
+        }
+
+        function stopAudioNodes() {
+            if (singleOsc) {
+                try { singleOsc.stop(); singleOsc.disconnect(); } catch(e){}
+                singleOsc = null;
+            }
+            if (leftOsc) {
+                try { leftOsc.stop(); leftOsc.disconnect(); } catch(e){}
+                leftOsc = null;
+            }
+            if (rightOsc) {
+                try { rightOsc.stop(); rightOsc.disconnect(); } catch(e){}
+                rightOsc = null;
+            }
+            if (noiseNode) {
+                try { noiseNode.stop(); noiseNode.disconnect(); } catch(e){}
+                noiseNode = null;
+            }
+        }
+
+        function stopAudio() {
+            if (!audioCtx || !isPlaying) return;
+
+            const currentTime = audioCtx.currentTime;
+            // Fade-Out 3 Detik
+            masterGainNode.gain.cancelScheduledValues(currentTime);
+            masterGainNode.gain.setValueAtTime(masterGainNode.gain.value, currentTime);
+            masterGainNode.gain.linearRampToValueAtTime(0, currentTime + 3);
+
+            setTimeout(() => {
+                stopAudioNodes();
+                isPlaying = false;
+                updatePlayButtonUI(false);
+            }, 3000);
+        }
+
+        function updatePlayButtonUI(active) {
+            if (active) {
+                playBtn.classList.remove('from-indigo-500', 'to-purple-600');
+                playBtn.classList.add('from-rose-600', 'to-pink-600');
+                playIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+                playBtnText.textContent = 'Hentikan Meditasi';
+            } else {
+                playBtn.classList.remove('from-rose-600', 'to-pink-600');
+                playBtn.classList.add('from-indigo-500', 'to-purple-600');
+                playIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
+                playBtnText.textContent = 'Mulai Meditasi';
+            }
+        }
+
+        // --- TIMER SESI ---
+        function startTimer(minutes) {
+            clearInterval(sessionTimer);
+            timerSecondsRemaining = minutes * 60;
+            timerDisplay.classList.remove('hidden');
+            updateTimerDisplay();
+
+            sessionTimer = setInterval(() => {
+                timerSecondsRemaining--;
+                updateTimerDisplay();
+
+                if (timerSecondsRemaining <= 0) {
+                    clearInterval(sessionTimer);
+                    stopAudio();
+                    timerDisplay.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSecondsRemaining / 60).toString().padStart(2, '0');
+            const s = (timerSecondsRemaining % 60).toString().padStart(2, '0');
+            timerDisplay.textContent = `${m}:${s}`;
+        }
+
+        // --- PANDUAN NAPAS ANIMASI (4-4-6 SEC) ---
+        function runBreathingCycle() {
+            if (!breathingToggle.checked) return;
+
+            // Phase 1: Tarik Napas (4s)
+            breathText.textContent = "Tarik Napas...";
+            breathCircle.style.transform = "scale(1.35)";
+            breathCircle.style.borderColor = "rgba(45, 212, 191, 0.8)";
+
+            setTimeout(() => {
+                if (!breathingToggle.checked) return;
+                // Phase 2: Tahan Napas (4s)
+                breathText.textContent = "Tahan...";
+                
+                setTimeout(() => {
+                    if (!breathingToggle.checked) return;
+                    // Phase 3: Hembuskan (6s)
+                    breathText.textContent = "Hembuskan...";
+                    breathCircle.style.transform = "scale(1.0)";
+                    breathCircle.style.borderColor = "rgba(99, 102, 241, 0.5)";
+                }, 4000);
+            }, 4000);
+        }
+
+        function startBreathingGuide() {
+            runBreathingCycle();
+            breathInterval = setInterval(runBreathingCycle, 14000); // Total durasi 1 siklus: 4+4+6 = 14 detik
+        }
+
+        function stopBreathingGuide() {
+            clearInterval(breathInterval);
+            breathCircle.style.transform = "scale(1.0)";
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Play / Stop Click
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                stopAudio();
+            } else {
+                startAudio();
+            }
+        });
+
+        // Master Volume Adjustment
+        masterVolumeInput.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            masterVolVal.textContent = Math.round((val / 0.6) * 100) + '%';
+            if (isPlaying && masterGainNode) {
+                masterGainNode.gain.setValueAtTime(val, audioCtx.currentTime);
+            }
+        });
+
+        // Background Pink Noise Volume Adjustment
+        bgVolumeInput.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            bgVolVal.textContent = Math.round((val / 0.4) * 100) + '%';
+            if (isPlaying && noiseGainNode) {
+                noiseGainNode.gain.setValueAtTime(val, audioCtx.currentTime);
+            }
+        });
+
+        // Mode Switching
+        modeSingleBtn.addEventListener('click', () => {
+            activeMode = 'single';
+            modeSingleBtn.className = "text-sm font-semibold pb-2 border-b-2 border-indigo-500 text-indigo-300 transition";
+            modeBinauralBtn.className = "text-sm font-semibold pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition";
+            singleTonePanel.classList.remove('hidden');
+            binauralPanel.classList.add('hidden');
+            if (isPlaying) startAudio(); // Re-init audio with new mode
+        });
+
+        modeBinauralBtn.addEventListener('click', () => {
+            activeMode = 'binaural';
+            modeBinauralBtn.className = "text-sm font-semibold pb-2 border-b-2 border-purple-500 text-purple-300 transition";
+            modeSingleBtn.className = "text-sm font-semibold pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition";
+            binauralPanel.classList.remove('hidden');
+            singleTonePanel.classList.add('hidden');
+            if (isPlaying) startAudio(); // Re-init audio with new mode
+        });
+
+        // Single Tone Presets
+        document.querySelectorAll('.tone-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tone-preset').forEach(b => {
+                    b.className = "tone-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-indigo-900/40 border border-slate-700/80 transition";
+                });
+                btn.className = "tone-preset py-2.5 px-3 text-left rounded-xl bg-indigo-600/30 border border-indigo-500 transition";
+
+                singleFreq = parseFloat(btn.dataset.freq);
+                manualFreqSlider.value = singleFreq;
+                manualFreqVal.textContent = singleFreq + " Hz";
+
+                if (isPlaying && singleOsc) {
+                    singleOsc.frequency.setValueAtTime(singleFreq, audioCtx.currentTime);
+                }
+            });
+        });
+
+        // Manual Tone Frequency Slider
+        manualFreqSlider.addEventListener('input', (e) => {
+            singleFreq = parseFloat(e.target.value);
+            manualFreqVal.textContent = singleFreq + " Hz";
+            if (isPlaying && singleOsc) {
+                singleOsc.frequency.setValueAtTime(singleFreq, audioCtx.currentTime);
+            }
+        });
+
+        // Binaural Presets
+        document.querySelectorAll('.binaural-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.binaural-preset').forEach(b => {
+                    b.className = "binaural-preset py-2.5 px-3 text-left rounded-xl bg-slate-800/80 hover:bg-purple-900/30 border border-slate-700 transition";
+                });
+                btn.className = "binaural-preset py-2.5 px-3 text-left rounded-xl bg-purple-900/30 border border-purple-500 transition";
+
+                binauralBeatFreq = parseFloat(btn.dataset.beat);
+                if (isPlaying && rightOsc) {
+                    rightOsc.frequency.setValueAtTime(binauralBaseFreq + binauralBeatFreq, audioCtx.currentTime);
+                }
+            });
+        });
+
+        // Base Frequency Slider for Binaural
+        baseFreqSlider.addEventListener('input', (e) => {
+            binauralBaseFreq = parseFloat(e.target.value);
+            baseFreqVal.textContent = binauralBaseFreq + " Hz";
+            if (isPlaying && leftOsc && rightOsc) {
+                leftOsc.frequency.setValueAtTime(binauralBaseFreq, audioCtx.currentTime);
+                rightOsc.frequency.setValueAtTime(binauralBaseFreq + binauralBeatFreq, audioCtx.currentTime);
+            }
+        });
+
+        // Timer Buttons Selection
+        timerBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                timerBtns.forEach(b => b.classList.remove('border-indigo-500', 'bg-indigo-600/30'));
+                btn.classList.add('border-indigo-500', 'bg-indigo-600/30');
+                const mins = parseInt(btn.dataset.minutes);
+                startTimer(mins);
+            });
+        });
+
+        // Category Select Event
+        categorySelect.addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            currentAffirmationIndex = 0;
+            updateAffirmationDisplay();
+        });
+
+        // Next & Prev Affirmations
+        nextAffirmationBtn.addEventListener('click', () => {
+            const list = initialAffirmationDatabase[currentCategory];
+            if (list && list.length > 0) {
+                currentAffirmationIndex = (currentAffirmationIndex + 1) % list.length;
+                updateAffirmationDisplay();
+            }
+        });
+
+        prevAffirmationBtn.addEventListener('click', () => {
+            const list = initialAffirmationDatabase[currentCategory];
+            if (list && list.length > 0) {
+                currentAffirmationIndex = (currentAffirmationIndex - 1 + list.length) % list.length;
+                updateAffirmationDisplay();
+            }
+        });
+
+        // Random Affirmation
+        randomBtn.addEventListener('click', () => {
+            const list = initialAffirmationDatabase[currentCategory];
+            if (list && list.length > 0) {
+                currentAffirmationIndex = Math.floor(Math.random() * list.length);
+                updateAffirmationDisplay();
+            }
+        });
+
+        // Speech Rate Display
+        speechRateInput.addEventListener('input', (e) => {
+            speechRateVal.textContent = parseFloat(e.target.value).toFixed(1) + 'x';
+        });
+
+        // TTS Button Click
+        ttsToggleBtn.addEventListener('click', () => {
+            speakAffirmation();
+        });
+
+        // Add Custom Affirmation
+        addAffirmationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = customAffirmationInput.value.trim();
+            if (text) {
+                initialAffirmationDatabase["Kustom"].push(text);
+                customAffirmationInput.value = '';
+                categorySelect.value = "Kustom";
+                currentCategory = "Kustom";
+                currentAffirmationIndex = initialAffirmationDatabase["Kustom"].length - 1;
+                updateAffirmationDisplay();
+            }
+        });
+
+        // Breathing Toggle
+        breathingToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                breathingContainer.classList.remove('hidden');
+                breathingContainer.classList.add('flex');
+                startBreathingGuide();
+            } else {
+                breathingContainer.classList.add('hidden');
+                breathingContainer.classList.remove('flex');
+                stopBreathingGuide();
+            }
+        });
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            updateAffirmationDisplay();
+            startAffirmationRotation();
+        };
+    </script>
+</body>
+</html>
